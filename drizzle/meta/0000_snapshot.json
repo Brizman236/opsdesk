@@ -1,0 +1,98 @@
+{
+  "id": "9dde5bdd-39b1-4d72-826d-102e607f5cff",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.tickets": {
+      "name": "tickets",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(254)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subject": {
+          "name": "subject",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'open'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "tickets_name_length_check": {
+          "name": "tickets_name_length_check",
+          "value": "char_length(\"tickets\".\"name\") BETWEEN 2 AND 100 AND btrim(\"tickets\".\"name\") <> ''"
+        },
+        "tickets_email_length_check": {
+          "name": "tickets_email_length_check",
+          "value": "char_length(\"tickets\".\"email\") BETWEEN 3 AND 254 AND btrim(\"tickets\".\"email\") <> ''"
+        },
+        "tickets_subject_length_check": {
+          "name": "tickets_subject_length_check",
+          "value": "char_length(\"tickets\".\"subject\") BETWEEN 5 AND 150 AND btrim(\"tickets\".\"subject\") <> ''"
+        },
+        "tickets_description_length_check": {
+          "name": "tickets_description_length_check",
+          "value": "char_length(\"tickets\".\"description\") BETWEEN 10 AND 5000 AND btrim(\"tickets\".\"description\") <> ''"
+        },
+        "tickets_status_check": {
+          "name": "tickets_status_check",
+          "value": "\"tickets\".\"status\" IN ('open', 'in_progress', 'closed')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
