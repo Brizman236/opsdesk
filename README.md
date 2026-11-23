@@ -15,3 +15,35 @@ Le backend Node.js reste exécuté sur la machine hôte. Docker Compose ne déma
 Le schéma JavaScript dans `src/db/schema.js` décrit les tables et contraintes utilisées par Drizzle ORM. La connexion et son pool sont centralisés dans `src/db/index.js`, pour que les autres couches puissent partager la même configuration et que la fermeture de connexion reste explicite.
 
 Les données sont stockées dans le volume Docker nommé `opsdesk_postgres_data`. `docker compose stop` ou `docker compose down` arrêtent/suppriment le conteneur sans supprimer le volume. Ne pas utiliser `docker compose down -v` si les données doivent être conservées.
+
+## Création d'un ticket
+
+`POST /api/tickets` crée un ticket sans authentification. Le corps JSON doit contenir uniquement `name`, `email`, `subject` et `description`. Ces quatre champs sont des chaînes obligatoires; les espaces aux extrémités sont retirés avant validation. Les longueurs acceptées sont respectivement 2–100, 3–254, 5–150 et 10–5000 caractères. L'adresse e-mail doit aussi respecter un format courant. Le client ne peut pas définir `id`, `status` ni `created_at`; PostgreSQL génère l'identifiant et fournit `open` et l'heure de création par défaut.
+
+Une réussite retourne `201 Created` avec le ticket créé dans `data`, dont l'horodatage est nommé `created_at`. Un JSON mal formé retourne `400`; un corps JSON valide qui ne respecte pas le contrat retourne `422`; une défaillance interne retourne `500`; une indisponibilité temporaire reconnue de PostgreSQL retourne `503`. Les réponses d'erreur ne révèlent pas les détails internes.
+
+Exemple :
+
+```sh
+curl -i http://localhost:3000/api/tickets \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Ada Lovelace",
+    "email": "ada@example.com",
+    "subject": "Accès au VPN",
+    "description": "Je ne parviens pas à me connecter au VPN depuis ce matin."
+  }'
+```
+
+Exemples d'erreurs à vérifier manuellement :
+
+```sh
+# JSON invalide : 400
+curl -i http://localhost:3000/api/tickets \
+  -H 'Content-Type: application/json' -d '{"name":'
+
+# Champ manquant ou inconnu : 422
+curl -i http://localhost:3000/api/tickets \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Ada Lovelace","email":"ada@example.com","subject":"VPN","description":"Description valide ici"}'
+```
