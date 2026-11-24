@@ -53,7 +53,7 @@ Travaux réalisés :
 
 Travaux prévus :
 
-- Définition de la stratégie de tests.
+- Étendre la stratégie de tests au comportement de l'API.
 - Mise en place d'un environnement PostgreSQL isolé.
 - Tests d'intégration des endpoints HTTP.
 - Vérification des réponses, des règles de validation et de la persistance.
@@ -67,7 +67,7 @@ Organisation cible :
 
 **Livrable :** une suite de tests reproductibles intégrée à la CI.
 
-**État :** stratégie définie, implémentation à réaliser.
+**État :** premiers tests locaux du cycle de vie du serveur implémentés; tests d'intégration avec PostgreSQL et intégration des tests dans GitHub Actions à réaliser.
 
 ### Phase 3 — Conteneurisation
 

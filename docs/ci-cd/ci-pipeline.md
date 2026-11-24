@@ -113,6 +113,8 @@ Cette première version fournit un contrôle automatisé élémentaire de la qua
 
 ### Limites identifiées
 
+Des tests locaux du cycle de vie du serveur existent et s'exécutent avec `npm test`, mais ils ne sont pas intégrés à ce workflow. La pipeline ne réalise donc pas encore de tests applicatifs ni de tests d'intégration avec PostgreSQL.
+
 La pipeline ne réalise pas encore :
 
 - de tests unitaires ;

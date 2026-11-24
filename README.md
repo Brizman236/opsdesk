@@ -12,9 +12,15 @@ Le backend Node.js reste exécuté sur la machine hôte. Docker Compose ne déma
 5. Appliquer les migrations en attente : `npm run db:migrate`. Cette étape exécute le SQL et enregistre la migration appliquée dans PostgreSQL.
 6. Lancer l'API sur l'hôte avec `npm run dev` ou `npm start`.
 
-Le schéma JavaScript dans `src/db/schema.js` décrit les tables et contraintes utilisées par Drizzle ORM. La connexion et son pool sont centralisés dans `src/db/index.js`, pour que les autres couches puissent partager la même configuration et que la fermeture de connexion reste explicite.
+Le schéma JavaScript dans `src/db/schema.js` décrit les tables et contraintes utilisées par Drizzle ORM. La connexion et son pool sont centralisés dans `src/db/index.js`; `src/server.js` orchestre la fermeture du pool à l'arrêt.
 
 Les données sont stockées dans le volume Docker nommé `opsdesk_postgres_data`. `docker compose stop` ou `docker compose down` arrêtent/suppriment le conteneur sans supprimer le volume. Ne pas utiliser `docker compose down -v` si les données doivent être conservées.
+
+## Cycle de vie et tests
+
+`src/app.js` configure Express sans démarrer le serveur HTTP. `src/server.js` démarre le serveur et traite `SIGINT` et `SIGTERM`. Lors d'un arrêt gracieux, le serveur cesse d'accepter de nouvelles connexions, laisse finir les requêtes actives, puis ferme le pool avec `pool.end()`. L'arrêt est idempotent; un délai maximal de 30 secondes est prévu.
+
+La suite locale de cycle de vie s'exécute avec `npm test`. Elle utilise un serveur HTTP et un pool PostgreSQL simulés : PostgreSQL n'a pas besoin d'être démarré. Voir la [stratégie de tests](docs/testing/test-strategy.md) pour le périmètre et les limites de ces vérifications.
 
 ## Création d'un ticket
 
