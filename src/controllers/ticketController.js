@@ -65,7 +65,7 @@ async function createTicket(req, res) {
   const ticketInput = validateTicketPayload(req.body);
   const ticket = await ticketService.createTicket(ticketInput);
 
-  res.status(201).json({
+  res.status(201).json(
     data: {
       id: ticket.id,
       name: ticket.name,
