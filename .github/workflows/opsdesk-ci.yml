@@ -24,4 +24,49 @@ jobs:
             
             - name: Check code synthax
               run: find ./src -name "*.js" -print0 | xargs -0 -n 1 node --check
-
+    test:
+        runs-on: ubuntu-latest
+        services:
+          postgres:
+            image: postgres:17.6-alpine
+            env:
+              POSTGRES_DB: ${{ vars.DB_TEST }}
+              POSTGRES_USER: ${{ vars.DB_TEST_USERNAME }}
+              POSTGRES_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
+            ports:
+              - 5432:5432
+            options: >-
+              --health-cmd pg_isready
+              --health-interval 10s
+              --health-timeout 5s
+              --health-retries 5
+        env:
+          TEST_DATABASE_URL: "postgresql://${{ vars.DB_TEST_USERNAME}}:localhost@127.0.0.1:5432/${{ vars.DB_TEST }}"
+        
+        steps:
+          - name: Checkout the code
+            uses: actions/checkout@v6
+        
+          - name: Setup Node.js
+            uses: actions/setup-node@v7
+            with:
+              node-version: 24
+          
+          - name: Install Dependencies
+            run: npm ci --omit=dev
+          
+          - name: Test postgres connection
+            run:  |
+              echo "Testing connection to: $TEST_DATABASE_URL"
+              # Exemple avec psql si installé, ou avec un script node/python
+              # Si tu utilises Node/pg:
+              node -e "
+                  const { Client } = require('pg');
+                  const client = new Client({ connectionString: process.env.TEST_DATABASE_URL });
+                  client.connect();
+                  client.query('SELECT NOW()', (err, res) => {
+                    if (err) throw err;
+                    console.log('DB Connection Successful:', res.rows[0]);
+                    client.end();
+                  });
+                "
