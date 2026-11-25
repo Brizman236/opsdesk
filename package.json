@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "node --test",
+    "test": "NODE_ENV=test node --test",
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "db:generate": "drizzle-kit generate",
