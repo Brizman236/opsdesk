@@ -45,7 +45,7 @@ jobs:
               --health-retries 5
         env:
           TEST_DATABASE_URL: "postgresql://${{ vars.DB_TEST_USERNAME}}:${{secrets.DB_TEST_PASSWORD}}@localhost:5432/${{ vars.DB_TEST }}"
-        
+          NODE_ENV: "test"
         steps:
           - name: Checkout the code
             uses: actions/checkout@v6
@@ -58,18 +58,5 @@ jobs:
           - name: Install Dependencies
             run: npm ci --omit=dev
           
-          - name: Test postgres connection
-            run:  |
-              echo "Testing connection to: $TEST_DATABASE_URL"
-              # Exemple avec psql si installé, ou avec un script node/python
-              # Si tu utilises Node/pg:
-              node -e "
-                  const { Client } = require('pg');
-                  const client = new Client({ connectionString: process.env.TEST_DATABASE_URL });
-                  client.connect();
-                  client.query('SELECT NOW()', (err, res) => {
-                    if (err) throw err;
-                    console.log('DB Connection Successful:', res.rows[0]);
-                    client.end();
-                  });
-                "
+          - name: Run integration tests for /api/tickets endpoint
+            run: npm test
