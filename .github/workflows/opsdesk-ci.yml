@@ -56,7 +56,7 @@ jobs:
               node-version: 24
           
           - name: Install Dependencies
-            run: npm ci --omit=dev
+            run: npm ci
           
           - name: Migrate data in test database
             run: 
