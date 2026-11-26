@@ -65,3 +65,12 @@ jobs:
           
           - name: Run integration tests for /api/tickets endpoint
             run: npm test
+
+    build-image:
+
+      runs-on: ubuntu-latest
+
+      steps:
+      - uses: actions/checkout@v6
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag opsdesk:$(date +%s)
