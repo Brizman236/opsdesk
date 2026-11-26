@@ -58,5 +58,10 @@ jobs:
           - name: Install Dependencies
             run: npm ci --omit=dev
           
+          - name: Migrate data in test database
+            run: 
+              npm run db:generate
+              npm run db:migrate
+          
           - name: Run integration tests for /api/tickets endpoint
             run: npm test
