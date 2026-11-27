@@ -67,7 +67,9 @@ jobs:
             run: npm test
 
     build-image:
-
+      
+      needs: [validate, test]
+        
       runs-on: ubuntu-latest
 
       steps:
