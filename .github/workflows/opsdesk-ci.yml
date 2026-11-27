@@ -63,21 +63,10 @@ jobs:
           
           - name: Run integration tests for /api/tickets endpoint
             run: npm test
-
-    build-image:
-      
-      needs: [validate, test]
-        
-      runs-on: ubuntu-latest
-
-      steps:
-      - uses: actions/checkout@v6
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag opsdesk:${{ github.sha }}
     
     push_to_registry:
       name: Push Docker image to Docker Hub
-      needs: [validate, test, build-image]
+      needs: [validate, test]
       runs-on: ubuntu-latest
       steps:
       - name: Checkout the code
