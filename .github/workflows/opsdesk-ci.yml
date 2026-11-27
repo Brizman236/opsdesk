@@ -59,9 +59,7 @@ jobs:
             run: npm ci
           
           - name: Migrate data in test database
-            run: |
-              npm run db:generate
-              npm run db:migrate
+            run: npm run db:migrate
           
           - name: Run integration tests for /api/tickets endpoint
             run: npm test
@@ -75,4 +73,4 @@ jobs:
       steps:
       - uses: actions/checkout@v6
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag opsdesk:$(date +%s)
+        run: docker build . --file Dockerfile --tag opsdesk:${{ github.sha }}
